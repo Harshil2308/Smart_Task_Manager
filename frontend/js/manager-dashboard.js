@@ -22,6 +22,48 @@ const managerCompletionBarNode = document.getElementById("manager-completion-bar
 const managerPriorityVisibilityNode = document.getElementById("manager-priority-visibility");
 let managerEmployees = [];
 
+function escapeHtml(value) {
+  return String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
+function formatAssignmentTime(value) {
+  if (!value) {
+    return "Time unavailable";
+  }
+
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) {
+    return "Time unavailable";
+  }
+
+  return date.toLocaleString([], {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+    hour: "numeric",
+    minute: "2-digit"
+  });
+}
+
+function buildAssignmentHistoryMarkup(task) {
+  const assignmentHistory = task.assignment_history || [];
+  if (!assignmentHistory.length) {
+    return '<div class="empty-state">No assignment history available.</div>';
+  }
+
+  return assignmentHistory.map((assignment) => `
+    <div class="timeline-chip">
+      <span>${escapeHtml(assignment.assigned_to_name || assignment.assigned_to || "Unknown")} - ${escapeHtml(assignment.status)}</span>
+      <small>${escapeHtml(formatAssignmentTime(assignment.assigned_at))}</small>
+    </div>
+  `).join("");
+}
+
 function redirectToLogin() {
   window.authUtils.clearAuthSession();
   window.location.href = "./login.html";
@@ -87,7 +129,7 @@ function renderManagerTasks(tasks) {
     ? workloadByEmployee.map((employee) => `
       <article class="workload-card">
         <div class="task-card-head">
-          <h3>${employee.name}</h3>
+          <h3>${escapeHtml(employee.name)}</h3>
           <span class="task-score">${employee.total}</span>
         </div>
         <div class="task-meta">
@@ -105,35 +147,44 @@ function renderManagerTasks(tasks) {
   }
 
   const employeeOptions = managerEmployees.map((employee) => `
-    <option value="${employee.id}">${employee.name}</option>
+    <option value="${employee.id}">${escapeHtml(employee.name)}</option>
   `).join("");
 
   managerTaskList.innerHTML = tasks.map((task) => `
     <article class="task-card">
       <div class="task-card-head">
-        <h3>${task.title}</h3>
+        <h3>${escapeHtml(task.title)}</h3>
         <span class="priority-pill priority-${String(task.priority_label || "Low").toLowerCase()}">${task.priority_label}</span>
       </div>
-      <p>${task.description || "No description provided."}</p>
+      <p>${escapeHtml(task.description || "No description provided.")}</p>
       <div class="task-meta">
-        <span class="tag">Assigned to: ${task.assigned_to_name || task.assigned_to}</span>
+        <span class="tag">Current assignee: ${escapeHtml(task.assigned_to_name || task.assigned_to || "Unassigned")}</span>
         <span class="tag">Priority: ${task.priority_label} (${task.priority_score})</span>
-        <span class="tag">Status: ${task.status}</span>
-        <span class="tag">Deadline: ${task.deadline || "Not set"}</span>
+        <span class="tag">Status: ${escapeHtml(task.status)}</span>
+        <span class="tag">Deadline: ${escapeHtml(task.deadline || "Not set")}</span>
+      </div>
+      <div class="assignment-history">
+        <strong>Assignment History</strong>
+        <div class="task-timeline">
+          ${buildAssignmentHistoryMarkup(task)}
+        </div>
       </div>
       <div class="task-timeline">
-        ${(task.assignment_history || []).map((assignment) => `
-          <span class="timeline-chip">
-            ${assignment.assigned_to_name || assignment.assigned_to} • ${assignment.status}
-          </span>
-        `).join("")}
+        <span class="timeline-label">Previous assignees:</span>
+        <span>${escapeHtml(
+          (task.assignment_history || [])
+            .slice(0, -1)
+            .map((assignment) => assignment.assigned_to_name || assignment.assigned_to)
+            .filter(Boolean)
+            .join(", ") || "None"
+        )}</span>
       </div>
       <div class="task-actions">
         <select data-reassign-select="${task.id}">
           <option value="">Reassign to...</option>
           ${employeeOptions}
         </select>
-        <button type="button" data-reassign-id="${task.id}" class="secondary">Reassign</button>
+        <button type="button" data-reassign-id="${task.id}" class="secondary" ${managerEmployees.length ? "" : "disabled"}>Reassign</button>
         <button type="button" data-delete-id="${task.id}" class="secondary">Delete</button>
       </div>
     </article>
@@ -170,7 +221,7 @@ async function loadEmployees() {
   managerEmployees = employees;
 
   employeeSelect.innerHTML = employees.length
-    ? employees.map((employee) => `<option value="${employee.id}">${employee.name} (${employee.email})</option>`).join("")
+    ? employees.map((employee) => `<option value="${employee.id}">${escapeHtml(employee.name)} (${escapeHtml(employee.email)})</option>`).join("")
     : '<option value="">No employees found</option>';
 }
 
@@ -184,11 +235,17 @@ async function bootstrapManagerDashboard() {
 
   try {
     await loadCurrentUser();
+  } catch (error) {
+    dashboardStatus.textContent = error.message;
+    redirectToLogin();
+    return;
+  }
+
+  try {
     await loadEmployees();
     await loadManagerTasks();
   } catch (error) {
     dashboardStatus.textContent = error.message;
-    redirectToLogin();
   }
 }
 

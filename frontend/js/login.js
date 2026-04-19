@@ -2,8 +2,18 @@ const loginForm = document.getElementById("login-form");
 const loginStatus = document.getElementById("login-status");
 
 const existingSession = window.authUtils.getAuthSession();
-if (existingSession?.user?.role) {
-  window.location.href = window.authUtils.getDashboardPath(existingSession.user.role);
+if (existingSession?.user?.role && existingSession?.token) {
+  window.authUtils.fetchCurrentUser()
+    .then((user) => {
+      if (user) {
+        window.location.href = window.authUtils.getDashboardPath(user.role);
+      } else {
+        window.authUtils.clearAuthSession();
+      }
+    })
+    .catch(() => {
+      window.authUtils.clearAuthSession();
+    });
 }
 
 loginForm?.addEventListener("submit", async (event) => {

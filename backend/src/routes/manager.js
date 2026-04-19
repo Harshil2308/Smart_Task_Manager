@@ -36,16 +36,20 @@ router.post("/reassign-task", async (req, res) => {
       return res.status(400).json({ message: "task_id and new_employee_id are required." });
     }
 
+    await connection.beginTransaction();
+
     const [taskRows] = await connection.execute(
-      "SELECT id, assigned_by, title FROM tasks WHERE id = ? LIMIT 1",
+      "SELECT id, assigned_by, title, status FROM tasks WHERE id = ? LIMIT 1 FOR UPDATE",
       [taskId]
     );
 
     if (taskRows.length === 0) {
+      await connection.rollback();
       return res.status(404).json({ message: "Task not found." });
     }
 
     if (taskRows[0].assigned_by !== req.user.id) {
+      await connection.rollback();
       return res.status(403).json({ message: "You can only reassign tasks you created." });
     }
 
@@ -55,6 +59,7 @@ router.post("/reassign-task", async (req, res) => {
     );
 
     if (employeeRows.length === 0 || employeeRows[0].role !== "employee") {
+      await connection.rollback();
       return res.status(400).json({ message: "New assignee must be a valid employee." });
     }
 
@@ -62,21 +67,22 @@ router.post("/reassign-task", async (req, res) => {
       `SELECT * FROM task_assignments
        WHERE task_id = ? AND status IN ('assigned', 'in-progress')
        ORDER BY assigned_at DESC, id DESC
-       LIMIT 1`,
+       LIMIT 1
+       FOR UPDATE`,
       [taskId]
     );
 
     if (activeAssignmentRows.length === 0) {
+      await connection.rollback();
       return res.status(400).json({ message: "No active assignment found for this task." });
     }
 
     const activeAssignment = activeAssignmentRows[0];
 
     if (activeAssignment.assigned_to === newEmployeeId) {
+      await connection.rollback();
       return res.status(400).json({ message: "This task is already assigned to the selected employee." });
     }
-
-    await connection.beginTransaction();
 
     await connection.execute(
       "UPDATE task_assignments SET status = 'reassigned' WHERE id = ?",

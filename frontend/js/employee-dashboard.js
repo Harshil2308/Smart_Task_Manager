@@ -215,10 +215,16 @@ async function bootstrapEmployeeDashboard() {
 
   try {
     await loadCurrentUser();
-    await loadEmployeeTasks();
   } catch (error) {
     dashboardStatus.textContent = error.message;
     redirectToLogin();
+    return;
+  }
+
+  try {
+    await loadEmployeeTasks();
+  } catch (error) {
+    dashboardStatus.textContent = error.message;
   }
 }
 

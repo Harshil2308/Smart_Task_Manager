@@ -7,9 +7,41 @@ dotenv.config();
 const authRoutes = require("./routes/auth");
 const taskRoutes = require("./routes/tasks");
 const managerRoutes = require("./routes/manager");
-const { testConnection } = require("./config/db");
+const { pool, testConnection } = require("./config/db");
 
 const app = express();
+
+async function ensureTaskAssignmentsTable() {
+  await pool.execute(
+    `CREATE TABLE IF NOT EXISTS task_assignments (
+      id INT AUTO_INCREMENT PRIMARY KEY,
+      task_id INT,
+      assigned_by INT,
+      assigned_to INT,
+      status ENUM('assigned','in-progress','completed','reassigned') DEFAULT 'assigned',
+      assigned_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+      CONSTRAINT fk_task_assignments_task FOREIGN KEY (task_id) REFERENCES tasks(id) ON DELETE CASCADE,
+      CONSTRAINT fk_task_assignments_assigned_by FOREIGN KEY (assigned_by) REFERENCES users(id),
+      CONSTRAINT fk_task_assignments_assigned_to FOREIGN KEY (assigned_to) REFERENCES users(id)
+    )`
+  );
+}
+
+(async () => {
+  try {
+    const dbReady = await testConnection();
+    if (!dbReady) {
+      console.error("Database connection failed during startup.");
+      return;
+    }
+
+    await ensureTaskAssignmentsTable();
+    console.log("Database schema verified: task_assignments table exists.");
+  } catch (error) {
+    console.error("Database schema initialization failed:", error.message);
+  }
+})();
 
 app.use(cors());
 app.use(express.json());

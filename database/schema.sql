@@ -50,3 +50,9 @@ CREATE TABLE IF NOT EXISTS task_assignments (
   CONSTRAINT fk_task_assignments_assigned_by FOREIGN KEY (assigned_by) REFERENCES users(id),
   CONSTRAINT fk_task_assignments_assigned_to FOREIGN KEY (assigned_to) REFERENCES users(id)
 );
+
+CREATE INDEX idx_task_assignments_task_status
+  ON task_assignments (task_id, status, assigned_at, id);
+
+CREATE INDEX idx_task_assignments_assigned_to_status
+  ON task_assignments (assigned_to, status, updated_at, id);

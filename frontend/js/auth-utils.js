@@ -1,13 +1,20 @@
 (function () {
   const storageKey = "task_ai_auth";
-  localStorage.removeItem(storageKey);
+
+  function storage() {
+    try {
+      return window.localStorage;
+    } catch (error) {
+      return window.sessionStorage;
+    }
+  }
 
   function setAuthSession(session) {
-    sessionStorage.setItem(storageKey, JSON.stringify(session));
+    storage().setItem(storageKey, JSON.stringify(session));
   }
 
   function getAuthSession() {
-    const raw = sessionStorage.getItem(storageKey);
+    const raw = storage().getItem(storageKey);
     if (!raw) {
       return null;
     }
@@ -15,13 +22,13 @@
     try {
       return JSON.parse(raw);
     } catch (error) {
-      sessionStorage.removeItem(storageKey);
+      storage().removeItem(storageKey);
       return null;
     }
   }
 
   function clearAuthSession() {
-    sessionStorage.removeItem(storageKey);
+    storage().removeItem(storageKey);
   }
 
   function updateAuthUser(user, token) {
@@ -46,18 +53,24 @@
       return null;
     }
 
-    const response = await fetch(`${window.APP_CONFIG.API_BASE_URL}/auth/me`, {
-      headers: {
-        Authorization: `Bearer ${session.token}`
+    try {
+      const response = await fetch(`${window.APP_CONFIG.API_BASE_URL}/auth/me`, {
+        headers: {
+          Authorization: `Bearer ${session.token}`
+        }
+      });
+
+      if (!response.ok) {
+        clearAuthSession();
+        return null;
       }
-    });
 
-    if (!response.ok) {
-      throw new Error("Unable to fetch current user.");
+      const data = await response.json();
+      return data.user;
+    } catch (error) {
+      clearAuthSession();
+      return null;
     }
-
-    const data = await response.json();
-    return data.user;
   }
 
   window.authUtils = {
