@@ -1,0 +1,189 @@
+Slide 1 - Objective
+
+Project Title:
+AI-Powered Team Task Intelligence System
+
+Objective:
+- Build a full-stack task management system that runs completely on localhost
+- Help managers assign tasks to employees with intelligent priority support
+- Combine ML-based scoring with keyword-based business rules
+- Support voice-to-task conversion for faster task creation
+- Improve team execution through priority-wise views, alerts, and dashboard visibility
+
+
+Slide 2 - Tools and Technologies
+
+Frontend:
+- HTML
+- CSS
+- JavaScript
+- Browser SpeechRecognition / webkitSpeechRecognition
+
+Backend:
+- Node.js
+- Express
+- mysql2
+- bcryptjs
+- jsonwebtoken
+- axios
+- cors
+- dotenv
+
+Database:
+- MySQL
+
+AI / ML Service:
+- Python
+- Flask
+- pandas
+- numpy
+- scikit-learn
+- joblib
+
+Development Mode:
+- Fully local setup
+- Frontend in browser
+- Backend on localhost:3000
+- ML service on localhost:5000
+- MySQL on local server
+
+
+Slide 3 - Technical Approach
+
+Overview:
+- We implemented a hybrid intelligent task management system
+- Priority is not decided by one fixed rule
+- The system combines ML prediction, keyword overrides, deadlines, effort, impact, workload, and live status updates
+
+Working Flow:
+1. Manager logs in or registers
+2. Manager creates a task manually or through voice input
+3. Backend extracts task details and deadline information
+4. Backend sends task factors to the Flask ML service
+5. ML service predicts priority score and priority label
+6. Backend applies keyword-based overrides using reference keywords from MySQL
+7. Final task data is stored in MySQL
+8. Employee views tasks in priority-wise grouped sections
+9. Employee updates status
+10. Dashboards reflect workload, completion, and alerts
+
+System Architecture:
+Frontend (HTML/CSS/JS)
+-> Backend API (Node.js + Express)
+-> MySQL Database
+-> ML Service (Python Flask)
+
+Key Implemented Features:
+- Authentication with manager and employee roles
+- Task creation and assignment
+- Voice-to-task capture
+- ML-based priority scoring
+- Keyword-based priority enhancement
+- Priority-wise employee task view
+- Overdue and approaching-deadline alerts
+- Manager workload visibility
+- Completion tracking
+- Profile update support
+
+
+Slide 4 - Feasibility and Viability
+
+Technical Feasibility:
+- Uses widely available technologies and open-source libraries
+- Runs fully on local machine without cloud dependency
+- Easy to demonstrate and test in classroom, hackathon, or judging environment
+- Modular architecture allows each layer to be debugged independently
+
+Operational Feasibility:
+- Simple user roles: manager and employee
+- Practical for team projects, internal workflows, student teams, and small organizations
+- Can be set up with standard Node, Python, and MySQL environments
+
+Viability:
+- Solves a real coordination problem in teams
+- Prioritization logic is explainable and extendable
+- Future features like notifications, exports, and analytics can be added on top of current structure
+
+
+Slide 5 - Uniqueness
+
+What makes this project different:
+- Hybrid intelligence model:
+  ML prediction + keyword override engine
+- Voice-based task creation for faster input
+- Employee dashboard grouped by task priority
+- Daily prioritized view and deadline alerts
+- Manager dashboard with workload and completion visibility
+- Fully local execution, which makes it practical for judging and offline environments
+
+Unique implementation detail:
+- A task like "urgent client meeting tomorrow" is not treated as plain text only
+- The system detects urgency from both structured factors and reference keywords
+- This produces stronger and more realistic prioritization
+
+
+Slide 6 - Impact and Benefits
+
+For Managers:
+- Better task assignment decisions
+- Clear visibility into workload and high-priority bottlenecks
+- Faster task entry through voice support
+- Better monitoring of completion progress
+
+For Employees:
+- Clearer daily focus through priority-wise task view
+- Alerts for overdue and near-deadline work
+- Easier task execution through ordered visibility
+- Profile management and status updates in one place
+
+Overall Benefits:
+- Reduces manual prioritization effort
+- Highlights urgent and high-impact work sooner
+- Improves coordination between managers and employees
+- Makes team activity more transparent and measurable
+
+
+Slide 7 - Research and References
+
+Conceptual Basis:
+- Task prioritization based on deadline, effort, impact, and workload
+- Ensemble machine learning using Random Forest models
+- Rule-based enhancement using domain keywords
+- Human-friendly voice capture using browser speech recognition
+
+Data and Logic Used in This Project:
+- Local CSV dataset for training
+- MySQL reference keyword table for override logic
+- Status-driven updates and deadline-sensitive alerts
+
+Libraries / Framework References:
+- Express documentation
+- Flask documentation
+- pandas documentation
+- scikit-learn documentation
+- MySQL documentation
+- Web Speech API / SpeechRecognition browser support references
+
+Note:
+- The current version uses a sample local dataset and local reference keywords
+- It is designed as a functional development/demo system, not a production deployment
+
+
+Slide 8 - Next Steps
+
+Immediate Next Steps:
+- Add task filters and search
+- Add reporting and export features such as CSV or PDF
+- Add graphical workload analytics
+- Add notification system for reminders
+
+Advanced Next Steps:
+- Improve voice parsing for richer natural language extraction
+- Add adaptive learning from completed task history
+- Add role-based analytics for faculty/admin style oversight
+- Add better recommendation logic for execution sequencing
+- Add deployment-ready production configuration if needed in future
+
+Current Status:
+- Core system is complete and verified locally
+- End-to-end flow works with frontend, backend, MySQL, and ML service

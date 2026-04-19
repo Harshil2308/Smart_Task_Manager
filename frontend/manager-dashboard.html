@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Manager Dashboard</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="shell">
+      <section class="panel">
+        <div class="top-bar">
+          <button id="back-button" type="button" class="secondary">Back</button>
+          <div class="top-bar-actions">
+            <button id="profile-toggle" type="button" class="secondary">Profile</button>
+            <button id="logout-button" type="button">Logout</button>
+          </div>
+        </div>
+        <h1>Manager Dashboard</h1>
+        <p class="status" id="dashboard-status" aria-live="polite"></p>
+        <section class="dashboard-hero">
+          <div>
+            <p class="eyebrow">Team Command</p>
+            <h2 class="hero-title">Assign work, shape urgency, and keep the team moving.</h2>
+            <p class="note">Create tasks manually or by voice, then track how priorities and statuses are evolving across your team.</p>
+          </div>
+          <div class="hero-badge-stack">
+            <span class="hero-badge">AI Priority</span>
+            <span class="hero-badge">Voice Input</span>
+            <span class="hero-badge">Live Team View</span>
+          </div>
+        </section>
+        <section class="info-card profile-card hidden" id="profile-panel">
+          <div class="section-head">
+            <h2>Edit Profile</h2>
+          </div>
+          <form id="profile-form">
+            <p class="status" id="profile-status" aria-live="polite"></p>
+            <label>Name</label>
+            <input id="profile-name" type="text" required />
+            <label>Email</label>
+            <input id="profile-email" type="email" required />
+            <label>New Password</label>
+            <input id="profile-password" type="password" placeholder="Leave blank to keep current password" />
+            <button type="submit">Save Profile</button>
+          </form>
+        </section>
+        <div class="dashboard-meta">
+          <div class="info-card">
+            <p class="eyebrow">Current User</p>
+            <h2 id="user-name">Loading...</h2>
+            <p id="user-email" class="note"></p>
+          </div>
+          <div class="info-card">
+            <p class="eyebrow">Role</p>
+            <h2>Manager</h2>
+            <p class="note">Create tasks, assign employees, and capture voice notes below.</p>
+          </div>
+          <div class="info-card stat-card">
+            <p class="eyebrow">Assigned Tasks</p>
+            <h2 id="manager-total-tasks">0</h2>
+            <p class="note">Total tasks created by you.</p>
+          </div>
+          <div class="info-card stat-card">
+            <p class="eyebrow">Completed</p>
+            <h2 id="manager-completed-tasks">0</h2>
+            <p class="note">Tasks already closed by employees.</p>
+          </div>
+        </div>
+        <div class="dashboard-grid dashboard-grid-wide">
+          <section class="info-card">
+            <div class="section-head">
+              <h2>Workload Visibility</h2>
+            </div>
+            <div id="manager-workload-board" class="workload-board"></div>
+          </section>
+          <section class="info-card">
+            <div class="section-head">
+              <h2>Completion Tracking</h2>
+            </div>
+            <div class="progress-panel">
+              <div class="progress-metric">
+                <span>Team completion rate</span>
+                <strong id="manager-completion-rate">0%</strong>
+              </div>
+              <div class="progress-bar-shell">
+                <div id="manager-completion-bar" class="progress-bar-fill"></div>
+              </div>
+              <div id="manager-priority-visibility" class="summary-grid"></div>
+            </div>
+          </section>
+        </div>
+        <div class="dashboard-grid">
+          <section class="info-card">
+            <div class="section-head">
+              <h2>Create Task</h2>
+              <button id="voice-button" type="button" class="secondary">Start Voice Input</button>
+            </div>
+            <form id="task-form">
+              <p class="status" id="task-status" aria-live="polite"></p>
+              <label>Assigned Employee</label>
+              <select id="assigned-to" required></select>
+              <label>Title</label>
+              <input id="task-title" type="text" placeholder="Task title" required />
+              <label>Description</label>
+              <textarea id="task-description" rows="4" placeholder="Describe the task"></textarea>
+              <label>Deadline</label>
+              <input id="task-deadline" type="date" />
+              <label>Effort</label>
+              <select id="task-effort">
+                <option value="Low">Low</option>
+                <option value="Medium" selected>Medium</option>
+                <option value="High">High</option>
+              </select>
+              <label>Impact</label>
+              <select id="task-impact">
+                <option value="Low">Low</option>
+                <option value="Medium" selected>Medium</option>
+                <option value="High">High</option>
+              </select>
+              <label>Workload</label>
+              <input id="task-workload" type="number" min="1" max="10" value="5" />
+              <label>Category</label>
+              <input id="task-category" type="text" placeholder="General" />
+              <label>Voice Transcript</label>
+              <textarea id="voice-text" rows="3" placeholder="Speech transcript will appear here"></textarea>
+              <button type="submit">Create and Assign Task</button>
+            </form>
+          </section>
+          <section class="info-card">
+            <div class="section-head">
+              <h2>Assigned Tasks</h2>
+              <button id="refresh-manager-tasks" type="button" class="secondary">Refresh</button>
+            </div>
+            <div id="manager-task-summary" class="summary-grid"></div>
+            <div id="manager-task-list" class="task-list"></div>
+          </section>
+        </div>
+      </section>
+    </main>
+    <script src="./js/config.js"></script>
+    <script src="./js/auth-utils.js"></script>
+    <script src="./js/api.js"></script>
+    <script src="./js/navigation.js"></script>
+    <script src="./js/manager-dashboard.js"></script>
+  </body>
+</html>

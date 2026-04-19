@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Register | Task AI System</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="shell">
+      <section class="panel form-panel">
+        <h1>Register</h1>
+        <form id="register-form">
+          <p class="status" id="register-status" aria-live="polite"></p>
+          <label>Name</label>
+          <input id="name" type="text" placeholder="Full name" required />
+          <label>Email</label>
+          <input id="email" type="email" placeholder="name@example.com" required />
+          <label>Password</label>
+          <input id="password" type="password" placeholder="Create password" required />
+          <label>Role</label>
+          <select id="role" required>
+            <option value="manager">manager</option>
+            <option value="employee">employee</option>
+          </select>
+          <button type="submit">Create Account</button>
+        </form>
+        <p class="note">Registration stores a hashed password and logs you in immediately.</p>
+      </section>
+    </main>
+    <script src="./js/config.js"></script>
+    <script src="./js/auth-utils.js"></script>
+    <script src="./js/register.js"></script>
+  </body>
+</html>

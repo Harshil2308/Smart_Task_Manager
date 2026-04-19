@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Employee Dashboard</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="shell">
+      <section class="panel">
+        <div class="top-bar">
+          <button id="back-button" type="button" class="secondary">Back</button>
+          <div class="top-bar-actions">
+            <button id="profile-toggle" type="button" class="secondary">Profile</button>
+            <button id="logout-button" type="button">Logout</button>
+          </div>
+        </div>
+        <h1>Employee Dashboard</h1>
+        <p class="status" id="dashboard-status" aria-live="polite"></p>
+        <section class="dashboard-hero">
+          <div>
+            <p class="eyebrow">My Workbench</p>
+            <h2 class="hero-title">See what matters first and move tasks to done.</h2>
+            <p class="note">Tasks are grouped by priority so urgent work stands out immediately.</p>
+          </div>
+          <div class="hero-badge-stack">
+            <span class="hero-badge">Priority Queues</span>
+            <span class="hero-badge">Status Updates</span>
+            <span class="hero-badge">Profile Control</span>
+          </div>
+        </section>
+        <section class="info-card profile-card hidden" id="profile-panel">
+          <div class="section-head">
+            <h2>Edit Profile</h2>
+          </div>
+          <form id="profile-form">
+            <p class="status" id="profile-status" aria-live="polite"></p>
+            <label>Name</label>
+            <input id="profile-name" type="text" required />
+            <label>Email</label>
+            <input id="profile-email" type="email" required />
+            <label>New Password</label>
+            <input id="profile-password" type="password" placeholder="Leave blank to keep current password" />
+            <button type="submit">Save Profile</button>
+          </form>
+        </section>
+        <div class="dashboard-meta">
+          <div class="info-card">
+            <p class="eyebrow">Current User</p>
+            <h2 id="user-name">Loading...</h2>
+            <p id="user-email" class="note"></p>
+          </div>
+          <div class="info-card">
+            <p class="eyebrow">Role</p>
+            <h2>Employee</h2>
+            <p class="note">Your assigned tasks and status updates are available below.</p>
+          </div>
+          <div class="info-card stat-card">
+            <p class="eyebrow">Open Tasks</p>
+            <h2 id="employee-open-count">0</h2>
+            <p class="note">Pending and in-progress tasks.</p>
+          </div>
+          <div class="info-card stat-card">
+            <p class="eyebrow">Completed</p>
+            <h2 id="employee-completed-count">0</h2>
+            <p class="note">Tasks you have finished.</p>
+          </div>
+        </div>
+        <div class="dashboard-grid dashboard-grid-wide">
+          <section class="info-card">
+            <div class="section-head">
+              <h2>Today’s Prioritized View</h2>
+            </div>
+            <div id="employee-today-focus" class="focus-list"></div>
+          </section>
+          <section class="info-card">
+            <div class="section-head">
+              <h2>Alerts</h2>
+            </div>
+            <div id="employee-alerts" class="alert-list"></div>
+          </section>
+        </div>
+        <div class="dashboard-grid">
+          <section class="info-card">
+            <div class="section-head">
+              <h2>My Tasks By Priority</h2>
+              <button id="refresh-employee-tasks" type="button" class="secondary">Refresh</button>
+            </div>
+            <div id="employee-priority-summary" class="summary-grid"></div>
+            <div id="employee-task-list" class="task-list"></div>
+          </section>
+        </div>
+      </section>
+    </main>
+    <script src="./js/config.js"></script>
+    <script src="./js/auth-utils.js"></script>
+    <script src="./js/api.js"></script>
+    <script src="./js/navigation.js"></script>
+    <script src="./js/employee-dashboard.js"></script>
+  </body>
+</html>
